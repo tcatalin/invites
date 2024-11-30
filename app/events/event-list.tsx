@@ -28,12 +28,13 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/hooks/use-toast"
 import { updateEvent, deleteEvent } from './actions'
+import { Event } from '@/lib/event'
 
-export default function EventList({ events }) {
-  const [editingEvent, setEditingEvent] = useState(null)
+export default function EventList({ events } : { events: Event[] }) {
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null)
   const router = useRouter()
 
-  const handleEditEvent = (event) => {
+  const handleEditEvent = (event : Event) => {
     setEditingEvent(event)
   }
 
@@ -158,7 +159,7 @@ export default function EventList({ events }) {
                     id="edit-date"
                     name="date"
                     type="date"
-                    defaultValue={editingEvent.created_at}
+                    defaultValue={editingEvent.created_at.toString()}
                     className="col-span-3"
                   />
                 </div>
