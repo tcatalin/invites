@@ -1,21 +1,11 @@
-import { createClient } from "@/utils/supabase/server";
-
+import { loadEvents } from "./actions";
 import EventList from './event-list'
 import CreateEventForm from './create-event-form'
 
 export const dynamic = 'force-dynamic'
 
 export default async function EventManagement() {
-  const supabase = await createClient();
-
-  const { data: events, error } = await supabase
-    .from('events')
-    .select('*')
-    .order('created_at', { ascending: true })
-
-  if (error) {
-    console.error('Error fetching events:', error)
-  }
+  let { events, error } = await loadEvents();
 
   return (
     <div className="container mx-auto p-4 space-y-6">

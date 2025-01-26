@@ -28,7 +28,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/hooks/use-toast"
 import { updateEvent, deleteEvent } from './actions'
-import { Event } from '@/lib/event'
+import { Event } from '@/lib/types/event'
 
 export default function EventList({ events } : { events: Event[] }) {
   const [editingEvent, setEditingEvent] = useState<Event | null>(null)
@@ -79,13 +79,12 @@ export default function EventList({ events } : { events: Event[] }) {
         {events.map((event) => (
           <Card key={event.id}>
             <CardHeader>
-              <CardTitle>{event.title}</CardTitle>
-              <CardDescription>{event.description}</CardDescription>
+              <CardTitle>{event.name}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Calendar className="h-4 w-4" />
-                <span>{format(new Date(event.created_at), 'MMMM d, yyyy')}</span>
+                <span>{event.locations ? format(new Date(event.locations[0].start_date), 'MMMM d, yyyy') : ''}</span>
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
@@ -136,21 +135,11 @@ export default function EventList({ events } : { events: Event[] }) {
                   <Input
                     id="edit-name"
                     name="name"
-                    defaultValue={editingEvent.title}
+                    defaultValue={editingEvent.name}
                     className="col-span-3"
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="edit-description" className="text-right">
-                    Description
-                  </Label>
-                  <Textarea
-                    id="edit-description"
-                    name="description"
-                    defaultValue={editingEvent.description}
-                    className="col-span-3"
-                  />
-                </div>
+               
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="edit-date" className="text-right">
                     Date
