@@ -1,6 +1,5 @@
 import { loadEvents } from "./actions";
 import EventList from './event-list'
-import CreateEventForm from './create-event-form'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,7 +10,6 @@ export default async function EventManagement() {
     <div className="container mx-auto p-4 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">My Events</h1>
-        <CreateEventForm />
       </div>
 
       {error && (
