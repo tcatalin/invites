@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus } from 'lucide-react'
+import { MapPin, Plus } from 'lucide-react'
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -27,11 +27,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { GoogleMapPicker } from '@/components/maps/google-map-picker'
 import { LocationAutocomplete } from '@/components/maps/google-location-autocomplete'
 import { GoogleMapsProvider } from '@/components/maps/google-maps-provider'
+import LocationPicker from "@/components/maps/location-picker";
 
 export default function CreateEventForm() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+
+  const [showMap, setShowMap] = useState<number | null>(null);
 
   const form = useForm<EventFormData>({
     resolver: zodResolver(EventSchema),
@@ -51,6 +54,12 @@ export default function CreateEventForm() {
     form.setValue(`locations.${index}.description`, location);
     //setNewSubEvent({ ...newSubEvent, location, coordinates })
   }
+
+  const handleLocationSelect2 = (index: number, location: { address: string; lat: number; lng: number }) => {
+    form.setValue(`locations.${index}.description`, location.address);
+    setShowMap(null);
+  };
+
 
   async function onSubmit(data: EventFormData) {
     setIsSubmitting(true)
@@ -78,7 +87,7 @@ export default function CreateEventForm() {
       <DialogTrigger asChild>
         <Button><Plus className="mr-2 h-4 w-4" /> Create New Event</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className='max-w-2xl'>
         <DialogHeader>
           <DialogTitle>Create New Event</DialogTitle>
           <DialogDescription>
@@ -87,12 +96,8 @@ export default function CreateEventForm() {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Card>
-              <CardHeader>
-                <CardTitle>Create New Event</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+           
                 <FormField control={form.control} name="name" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Event Name</FormLabel>
@@ -153,10 +158,18 @@ export default function CreateEventForm() {
                           </FormItem>
                         )}
                       />
-                      <GoogleMapsProvider>
+                      {/* <GoogleMapsProvider>
                         <LocationAutocomplete onLocationSelect={(location: string, coordinates: [number, number]) => handleLocationSelect(location, coordinates, index)} />
                         <GoogleMapPicker onLocationSelect={(location: string, coordinates: [number, number]) => handleLocationSelect(location, coordinates, index)} />
-                      </GoogleMapsProvider>
+                      </GoogleMapsProvider> */}
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowMap(index)}
+                        >
+                        <MapPin className="w-4 h-4" />
+                      </Button>
                       {index > 0 && (
                         <Button type="button" variant="destructive" onClick={() => remove(index)}>
                           Remove Location
@@ -169,12 +182,18 @@ export default function CreateEventForm() {
                 <Button type="button" onClick={() => append({ description: "", start_date: new Date() })}>
                   Add Location
                 </Button>
-              </CardContent>
-            </Card>
+
 
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Creating..." : "Create Event"}
             </Button>
+
+            {showMap !== null && (
+              <LocationPicker
+                onSelect={(location) => handleLocationSelect2(showMap, location)}
+                onClose={() => setShowMap(null)}
+              />
+            )}
           </form>
         </Form>
         {/* 
