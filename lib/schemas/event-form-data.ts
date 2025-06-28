@@ -1,4 +1,5 @@
 import * as z from "zod"
+import { EventLocation, EventType } from "../types/event"
 
 const EventLocationSchema = z.object({
   name: z.string().optional(),
@@ -7,7 +8,8 @@ const EventLocationSchema = z.object({
   end_date: z.date().optional(),
   location_name: z.string().optional(),
   address: z.string().optional(),
-  coords: z.string().optional(),
+  lat: z.number().optional(),
+  lng: z.number().optional(),
 })
 
 export const EventSchema = z.object({
@@ -21,3 +23,10 @@ export const EventSchema = z.object({
 
 export type EventFormData = z.infer<typeof EventSchema>
 
+export const predefinedLocations: Record<EventType, Partial<EventLocation>[]> = {
+  [EventType.Birthday]: [{ name: "Petrecerea" }],
+  [EventType.Wedding]: [{ name: "Cununia civilă" },  { name: "Cununia religioasă" },  { name: "Petrecerea" }],
+  [EventType.Conference]: [{ name: "Conferința" }],
+  [EventType.Other]: [{ name: "" }],
+  [EventType.Baptism]: [{ name: "Botez" },  { name: "Petrecerea" }]
+}

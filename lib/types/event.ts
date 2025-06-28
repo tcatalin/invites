@@ -10,12 +10,13 @@ export interface Event {
 }
 
 export interface EventLocation {
-  subevent_name?: string;
+  name?: string;
   start_date: Date;  
   end_date?: Date
   location_name?: string;
   address?: string;
-  coords?: string;
+  lat?: number;
+  lng?: number;
 }
 
 export interface CreateEventModel {
@@ -23,12 +24,12 @@ export interface CreateEventModel {
   user_id: string;
   locations: EventLocation[];
   description?: string;
-  type? : EvenType;
+  type? : EventType;
   template_type?: number;
   template_config?: Map<string, string>;
 }
 
-export enum EvenType {
+export enum EventType {
   Wedding = 'Wedding',
   Baptism = 'Baptism',
   Birthday = 'Birthday',
